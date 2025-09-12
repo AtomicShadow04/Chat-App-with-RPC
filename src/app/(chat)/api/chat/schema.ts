@@ -19,9 +19,9 @@ const partSchema = z.discriminatedUnion("type", [
 ]);
 
 export const postRequestBodySchema = z.object({
-	id: z.string().uuid(),
+	id: z.uuid(),
 	message: z.object({
-		id: z.string().uuid(),
+		id: z.uuid(),
 		role: z.enum(["user", "assistant"]),
 		parts: z.array(partSchema),
 	}),
