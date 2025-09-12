@@ -39,8 +39,8 @@ export default function Home() {
     const firstUserMessage = messages.find(msg => msg.sender === "user");
     if (firstUserMessage) {
       const truncated = firstUserMessage.text.slice(0, 30);
-      return truncated.length < firstUserMessage.text.length
-        ? `${truncated}...`
+      return truncated.length < firstUserMessage.text.length 
+        ? `${truncated}...` 
         : truncated;
     }
     return "New Chat";
@@ -75,7 +75,7 @@ export default function Home() {
 
   const handleSendMessage = useCallback(async (text: string) => {
     if (!currentChatId || !text.trim()) return;
-
+    
     setIsLoading(true);
     const userMessage: MessageData = {
       id: `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
@@ -87,19 +87,19 @@ export default function Home() {
     // Add user message
     setChats(prev => prev.map(chat =>
       chat.id === currentChatId
-        ? {
-          ...chat,
-          messages: [...chat.messages, userMessage],
-          updatedAt: new Date(),
-          name: chat.messages.length === 0 ? generateChatName([userMessage]) : chat.name
-        }
+        ? { 
+            ...chat, 
+            messages: [...chat.messages, userMessage],
+            updatedAt: new Date(),
+            name: chat.messages.length === 0 ? generateChatName([userMessage]) : chat.name
+          }
         : chat
     ));
 
     // Simulate bot response (replace with actual API call)
     try {
       await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API delay
-
+      
       const botMessage: MessageData = {
         id: `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
         text: `I received your message: "${text.trim()}". This is a simulated response.`,
@@ -109,11 +109,11 @@ export default function Home() {
 
       setChats(prev => prev.map(chat =>
         chat.id === currentChatId
-          ? {
-            ...chat,
-            messages: [...chat.messages, botMessage],
-            updatedAt: new Date()
-          }
+          ? { 
+              ...chat, 
+              messages: [...chat.messages, botMessage],
+              updatedAt: new Date()
+            }
           : chat
       ));
     } catch (error) {
@@ -127,7 +127,7 @@ export default function Home() {
   const handleDeleteChat = useCallback((chatId: string) => {
     const newChats = chats.filter(chat => chat.id !== chatId);
     setChats(newChats);
-
+    
     if (currentChatId === chatId) {
       if (newChats.length > 0) {
         setCurrentChatId(newChats[0].id);
@@ -146,113 +146,27 @@ export default function Home() {
     ));
   }, []);
 
-  const currentChat = chats.find(chat => chat.id === currentChatId) || null;
+  const currentChat = chats.find((chat) => chat.id === currentChatId) || null;
 
   return (
-    <div className="flex h-screen bg-gray-50 dark:bg-gray-900 overflow-hidden">
-      {/* Mobile Menu Overlay */}
-      {isMobileMenuOpen && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
-          onClick={handleToggleMobileMenu}
-        />
-      )}
-
-      {/* Main Content */}
-      <div className="flex flex-col flex-1 min-w-0">
-        {/* Chat Header */}
-        <ChatHeader
-          currentChat={currentChat}
-          onToggleMobileMenu={handleToggleMobileMenu}
-          onToggleCollapse={handleToggleCollapse}
-          isSidebarCollapsed={isSidebarCollapsed}
-        />
-
-        {/* Chat Area */}
-        <div className="flex-1 overflow-hidden">
-          <ChatArea
-            messages={currentChat?.messages || []}
-            isLoading={isLoading}
-            className="h-full"
-          />
-        </div>
-
-        {/* Input Area */}
-        <div className="border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
-          <Input
-            onSendMessage={handleSendMessage}
-            disabled={isLoading}
-            placeholder={currentChat ? "Type your message..." : "Start a new conversation..."}
-          />
+    <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
+      <div className="flex flex-col w-full ">
+        <ChatHeader />
+        <div className="flex flex-col flex-1">
+          <ChatArea messages={currentChat ? currentChat.messages : []} />
+          <Input onSendMessage={handleSendMessage} />
         </div>
       </div>
     </div>
   );
 }
 
-interface ChatHeaderProps {
-  currentChat: Chat | null;
-  onToggleMobileMenu: () => void;
-  onToggleCollapse: () => void;
-  isSidebarCollapsed: boolean;
-}
-
-const ChatHeader: React.FC<ChatHeaderProps> = ({
-  currentChat,
-  onToggleMobileMenu,
-  onToggleCollapse,
-  isSidebarCollapsed
-}) => {
+const ChatHeader = () => {
   return (
-    <header className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
-      <div className="flex items-center gap-3">
-        {/* Mobile Menu Button */}
-        <button
-          onClick={onToggleMobileMenu}
-          className="md:hidden p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
-          aria-label="Toggle sidebar"
-        >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-          </svg>
-        </button>
-
-        {/* Desktop Sidebar Toggle */}
-        <button
-          onClick={onToggleCollapse}
-          className="hidden md:block p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
-          aria-label={isSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-        >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d={isSidebarCollapsed ? "M9 5l7 7-7 7" : "M15 19l-7-7 7-7"}
-            />
-          </svg>
-        </button>
-
-        <div className="flex flex-col">
-          <h1 className="text-lg font-semibold text-gray-900 dark:text-white">
-            {currentChat?.name || "Chat"}
-          </h1>
-          {currentChat?.messages.length ? (
-            <p className="text-sm text-gray-500 dark:text-gray-400">
-              {currentChat.messages.length} message{currentChat.messages.length !== 1 ? 's' : ''}
-            </p>
-          ) : null}
-        </div>
-      </div>
-
-      {/* Additional Header Actions */}
-      <div className="flex items-center gap-2">
-        {currentChat && (
-          <div className="text-xs text-gray-500 dark:text-gray-400">
-            Updated {currentChat.updatedAt.toLocaleTimeString()}
-          </div>
-        )}
-      </div>
-    </header>
+    <div className="flex items-center justify-start p-4 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 gap-5
+">
+      <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Chat</h2>
+      <SidebarToggle />
+    </div>
   );
 };
