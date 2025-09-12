@@ -1,0 +1,1 @@
+export const guestRegex = /^guest-\d+$/;

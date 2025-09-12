@@ -73,7 +73,7 @@ export default function Home() {
   return (
     <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
       <div className="hidden md:block">
-        <Sidebar
+        {/* <Sidebar
           chats={chats}
           currentChatId={currentChatId}
           onNewChat={handleNewChat}
@@ -81,7 +81,7 @@ export default function Home() {
           onDeleteChat={handleDeleteChat}
           isCollapsed={isSidebarCollapsed}
           onToggleCollapse={handleToggleCollapse}
-        />
+        /> */}
       </div>
       <div className="flex flex-col flex-1">
         <ChatArea messages={currentChat ? currentChat.messages : []} />
