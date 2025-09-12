@@ -1,10 +1,7 @@
+import { Chat } from "@/lib/db/schema";
 import React from "react";
 
-interface Chat {
-  id: string;
-  name: string;
-  messages: { id: number; text: string; sender: "user" | "bot" }[];
-}
+
 
 interface SidebarProps {
   chats: Chat[];
@@ -58,7 +55,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             }`}
             onClick={() => onSelectChat(chat.id)}
           >
-            <span>{chat.name}</span>
+            <span>{chat.title}</span>
             <button
               className="ml-2 text-red-500 hover:text-red-700"
               onClick={(e) => {
