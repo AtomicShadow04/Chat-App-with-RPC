@@ -51,10 +51,10 @@ export class ChatSDKError extends Error {
 			console.error({ code, message, cause });
 			return Response.json({ code, message }, { status: statusCode });
 		}
-        if (visibilitys.includes("terminal")) {
-            console.debug({ code, message, cause });
-            return Response.json({ code, message }, { status: statusCode });
-        }
+		if (visibilitys.includes("terminal")) {
+				console.debug({ code, message, cause });
+				return Response.json({ code, message }, { status: statusCode });
+		}
 	}
 }
 export const getMessageFromErrorCode = (error: ErrorCode) => {

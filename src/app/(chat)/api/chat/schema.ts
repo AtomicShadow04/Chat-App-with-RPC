@@ -25,3 +25,8 @@ export const postRequestBodySchema = z.object({
     parts: z.array(partSchema),
   }),
 });
+
+export const updateChatTitleSchema = z.object({
+  chatId: z.uuid(),
+  title: z.string().min(1, "Cannot process empty title")
+})

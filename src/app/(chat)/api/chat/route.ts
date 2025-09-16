@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { openai } from "@ai-sdk/openai";
 import { generateText } from "ai";
-import { postRequestBodySchema } from "./schema";
+import { postRequestBodySchema, updateChatTitleSchema } from "./schema";
 import {
   getChatsByUserId,
   getChatById,
@@ -9,7 +9,10 @@ import {
   getMessagesByChatId,
   createMessage,
   deleteChat,
+  updateChatTitle,
 } from "@/lib/db/queries";
+import { ChatSDKError } from "@/lib/error";
+import { chat } from "@/lib/db/schema";
 
 // Hardcoded userId for demo; replace with actual auth
 const USER_ID = "user_123";
@@ -92,5 +95,29 @@ export async function DELETE(request: NextRequest) {
       { error: "Internal server error" },
       { status: 500 }
     );
+  }
+}
+
+export const PUT = async(request : NextRequest) =>{
+  try {
+    const body = await request.json()
+    const validation = updateChatTitleSchema.safeParse(body)
+
+    if(!validation.success){
+      const err = new ChatSDKError("bad_request:chat", validation.error.message)
+      return err.toResponse()
+    }
+    const {chatId, title} = validation.data
+    const updated = await updateChatTitle(chatId, title)
+    if(!updated){
+      const err = new ChatSDKError("not_found:chat", "Chat cannot be updated")
+      return err.toResponse()
+    }
+
+    return NextResponse.json({message : "Updated Successfully"})
+  } catch (error) {
+    console.error("PUT error:", error);
+    const err = new ChatSDKError("offline:chat", "Internal server error");
+    return err.toResponse();
   }
 }

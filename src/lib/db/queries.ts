@@ -28,7 +28,8 @@ export async function createChat(userId: string, title: string) {
 }
 
 export async function updateChatTitle(chatId: string, title: string) {
-  await db.update(chat).set({ title }).where(eq(chat.id, chatId));
+  const result = await db.update(chat).set({ title }).where(eq(chat.id, chatId)).returning()
+  return result[0] || null
 }
 
 export async function deleteChat(chatId: string) {
