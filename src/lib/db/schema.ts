@@ -4,6 +4,7 @@ import { InferSelectModel } from "drizzle-orm";
 export const user = pgTable("users", {
   id: uuid("id").primaryKey().notNull().defaultRandom(),
   email: text("email").notNull().unique(),
+  password: text("password").notNull(),
   name: text("name").notNull(),
   createdAt: timestamp("created_at").defaultNow(),
 });
