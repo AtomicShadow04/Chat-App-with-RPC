@@ -2,7 +2,6 @@ import { AppSidebar } from "@/components/app-sidebar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { cookies } from "next/headers";
 
-
 export default async function ChatLayout({
   children,
 }: Readonly<{

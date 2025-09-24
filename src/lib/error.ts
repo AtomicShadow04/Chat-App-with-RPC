@@ -1,10 +1,13 @@
+import { DatabaseError } from "./db/utils";
+
 export type ErrorType =
 	| "bad_request"
 	| "unauthorized"
 	| "forbidden"
 	| "not_found"
 	| "rate_limit"
-	| "offline";
+	| "offline"
+	| "database";
 
 export type Surface = "chat" | "stream";
 
@@ -23,6 +26,7 @@ const statusCodeMap: Record<ErrorType, number> = {
 	not_found: 404,
 	rate_limit: 429,
 	offline: 503,
+	database : 500
 };
 
 export type ErrorCode = `${ErrorType}:${Surface}`;

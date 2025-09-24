@@ -1,6 +1,7 @@
 import { db, withDatabaseConnection, DatabaseError } from "./utils";
 import { chat, message, user, type User } from "./schema";
 import { eq, desc } from "drizzle-orm";
+import bycrypt from 'bcryptjs'
 
 // Input validation helpers
 const validateUserId = (userId: string): void => {
@@ -235,11 +236,13 @@ export async function createUser(
         throw new DatabaseError("User with this email already exists");
       }
 
+      const hashedPassword = await bycrypt.hash(password, 12)
+
       const result = await db
         .insert(user)
         .values({
           email: email.toLowerCase().trim(),
-          password,
+          password : hashedPassword,
           name: name.trim(),
           createdAt: new Date(),
         })
